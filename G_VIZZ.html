@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior:smooth;">
+<title> G Code Path Visualiser </title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+	:root { --sideBarWidth: 300px; }
+	canvas {
+		background-color: black;
+		transform: scaleY(-1);
+	}
+	canvas:hover { cursor: crosshair; }
+	canvas:active:hover, canvas:active:focus { cursor: move; }
+	#gCode { text-transform: uppercase; }
+	#infoBar { width: calc(100vw - (var(--sideBarWidth))); }
+	#mainContent { overflow: hidden; }
+	#sideBar { width: var(--sideBarWidth); }
+	.section {
+		height: 100vh;
+		overflow-y: scroll;
+		scroll-behavior: smooth;
+	}
+	.w3-hover-blue:hover {
+		background-color: blue !important;
+		color: white !important;
+	}
+	.w3-input {
+		max-width: 100%;
+		min-width: 100%;
+	}
+</style>
+<script>
+	const DR = document.querySelector (`:root`);
+	const R = getComputedStyle (DR);
+	const sideBarWidth = R.getPropertyValue (`--sideBarWidth`).slice (0, -2);
+	var sideBarOpen = true;
+	window.onhashchange = () => { if (sideBarOpen) menu(); };
+	function menu() {
+		if (sideBarOpen) {
+			document.getElementById (`sideBar`).style.display = `none`;
+			document.getElementById (`infoBar`).style.width = `100vw`;
+			sideBarOpen = false;
+		}else {
+			document.getElementById (`sideBar`).style.display = `block`;
+			document.getElementById (`infoBar`).style.width = `calc(100vw - ${sideBarWidth}px)`;
+			setTimeout (() => { sideBarOpen = true; }, 400);
+		}
+	}
+</script>
+<body class="w3-row ">
+<a href="#menu" class="w3-btn w3-black w3-hover-indigo" style="position:fixed;" onclick=menu() title="show side panel"> <i class="fa fa-bars"> </i> </a>
+<div id="sideBar" class="section w3-col w3-card-4 w3-light-gray w3-animate-left">
+	<div class="w3-bar w3-card w3-black">
+		<a href="#menu" class="w3-bar-item w3-btn w3-hover-indigo" onclick=menu() title="hide side panel"> <i class="fa fa-chevron-left"> </i> </a>	
+		<b class="w3-bar-item"> G Vizz </b>
+		<b class="w3-bar-item w3-btn w3-hover-red w3-right" onclick=settings() title="settings"> <i class="fa fa-cog"> </i> </b>	
+	</div>
+	<div class="w3-padding-small" style="min-height:100vh;">
+		<p> <i class="fileName"> <small> no file uploaded </small> </i> <br>
+			<i class="w3-btn w3-large w3-light-green fa fa-save" title="SAVE"> </i>
+			<i class="w3-btn w3-large w3-orange fa fa-upload" title="UPLOAD"> </i>
+		</p>
+		<textarea rows="15" id="gCode" class="w3-input w3-border" oninput="this.value=this.value.toUpperCase()">
+
+g1 x14.992
+g2 x15.09 y-0.584 j-0.3
+g3 x0 y-10.275 i12.41 j-35.916
+g1 y-12
+
+G1 X0.5 Y0
+G1 X0 Y0
+G1 X5.04 Y27.2
+G2 X16.94 Y26.11 I5.9 J-1.09
+G1 X16.94 Y-1.96
+
+		</textarea>
+		<p id="statusBar"></p>
+		<b class="w3-btn w3-block w3-round-xxlarge w3-indigo w3-hover-black w3-margin-top" title="DRAW PATH" onclick=plotGcode()> <i class="fa fa-play"> </i> PLOT </b>
+		<br>
+		<div class="w3-black w3-padding-small">
+			<center> <b> Action Log </b> </center> <br>
+			<p id="log" class="w3-small"> </p>
+		</div>
+	</div>
+	<div class="w3-black w3-center">
+		<i> <small> G Code Visualising Tool <br> Powered by
+		<a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity w3-text-white"> w3.css </a> </small> </i>
+	</div>
+</div>
+<div id="mainContent" class="section w3-rest">
+	<canvas id="cv" width="1920" height="1080" > canvas </canvas>
+	<div id="infoBar" class="w3-bottom w3-card-4 w3-black">
+		<p id="error" class="w3-red w3-text-black w3-center"> </p>
+		<div class="w3-bar">
+			<i id="mousePos" class="w3-bar-item"> </i>
+			<i class="w3-bar-item w3-right w3-small w3-button w3-hover-blue" onclick=resetZoomPan()> RESET </b> </i>
+			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-plus" onclick=ZS.stepUp();zoomChange();> </i>
+			<i class="w3-bar-item w3-right"> <input type="range" min="1" max="100" step="1" value="50" id="zoom" /> </i>
+			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-minus" onclick=ZS.stepDown();zoomChange();> </i>
+			<b id="measurementTool" class="w3-bar-item w3-right w3-small w3-button w3-green w3-hover-light-green"> <i class="fa fa-expand w3-large"> </i> Measure Distance </b>
+		</div>
+	</div>
+</div>
+<script>
+	const CV = document.getElementById (`cv`);
+	const C = CV.getContext (`2d`);
+	const LOG = $(`#log`);
+	const VP = document.getElementById (`mainContent`);
+	const ZS = document.getElementById (`zoom`);
+	const DEFAULT_LINE_WIDTH = 2;
+	const RADIUS_ERROR_THRESHOLD = 0.001;
+	const RESOLUTION = 1000;
+	const ZOOM_DEFAULT_LEVEL = 50;
+const ZOOM_STEP = 1;
+	const ZOOM_MAX_LIMIT = 100;
+	const ZOOM_MIN_LIMIT = 1;
+	const ZOOM_SCALE_STEP = 0.2;
+    let CurrentTransformedCursor;
+	let CvOrigin = { X: 0, Y: 0 };
+    let DragStartPosition = { x: 0, y: 0 };
+	let GCode = ``;
+    let IsDragging = false;
+	let L;
+	let LineWidth = DEFAULT_LINE_WIDTH;
+	let X, Y, pX, pY;
+	let ZoomLevel = ZOOM_DEFAULT_LEVEL;
+
+    function drawPathToCanvas() {
+        C.save();
+        C.setTransform (1, 0, 0, 1, 0, 0);
+        C.clearRect (0, 0, CV.width, CV.height);
+        C.restore();
+		C.lineWidth = LineWidth;
+		markOrigin();
+		interpretGcode();
+    }
+    function getTransformedPoint (x, y) {
+		const originalPoint = new DOMPoint (x, y);
+		return C.getTransform().invertSelf().transformPoint (originalPoint);
+    }
+	function interpretGcode() {
+		if (GCode == ``) return;
+		LOG.html (``);
+		$(`#error`).html (``);
+		let lineColor, I, J, H, K, R, sAngle, eAngle, antiClock = false, calcRadius, error = false, errMsg;
+		pX = CvOrigin.X;
+		pY = CvOrigin.Y;
+		for (L = 1; L < GCode.length; L++) {
+			antiClock = false;
+			C.beginPath();
+			C.moveTo (pX, pY);
+			switch (GCode[L].split (` `)[0]) {
+				case `0` :
+					lineColor = `white`;
+					X = val (`X`);
+					Y = val (`Y`);
+					C.lineTo (X, Y);
+					LOG.html (LOG.html() + logActionMsg (`Move`));
+					break;
+				case `1` :
+					lineColor = `orange`;
+					X = val (`X`);
+					Y = val (`Y`);
+					C.lineTo (X, Y);
+					LOG.html (LOG.html() + logActionMsg (`Cut`));
+					break;
+				case `2` :
+					antiClock = true;
+				case `3` :
+					lineColor = `yellow`;
+					X = val (`X`);
+					Y = val (`Y`);
+					I = val (`I`);
+					J = val (`J`);
+					H = pX + I;
+					K = pY + J;
+					R = Math.sqrt ((I * I) + (J * J));
+					sAngle = Math.atan (J / I) + (I < 0 ? 0 : Math.PI);
+					eAngle = Math.atan ((K - Y) / (H - X)) + ((H < X) ? 0 : Math.PI);
+					calcRadius = Math.sqrt (Math.pow (H - X, 2) + Math.pow (K - Y, 2));
+					if (RADIUS_ERROR_THRESHOLD <= (Math.abs (R - calcRadius) / RESOLUTION)) {
+						error = true;
+						$(`#error`).html (`<b> Radius Error! </b>`);
+						errMsg = `<br> end point is ${(R < calcRadius ? `farther` : `closer`)} than expected <br>`;
+						errMsg += `expected radius ${(R / RESOLUTION)} , calculated radius ${(calcRadius / RESOLUTION)} <br><br>`;
+						LOG[0].scrollIntoView (false);
+					}
+					C.arc (H, K, R, sAngle, eAngle, antiClock);
+					LOG.html (LOG.html() + logActionMsg (`Cut Arc ${(GCode[L][0] == `3` ? `Anti-`:``)} Clockwise`));
+					break;
+				
+				
+				case `92` :
+					CvOrigin.X = X - val (`X`);
+					CvOrigin.Y = Y - val (`Y`);
+					LOG.html (LOG.html() + logActionMsg (`Set`));
+					break;
+			}
+			C.strokeStyle = lineColor;
+			C.stroke();
+			pX = X;
+			pY = Y;
+			if (error) {
+				LOG.html (LOG.html() + errMsg);
+				break;
+			} 
+		}
+	}
+	function logActionMsg (action) { return `${L} <small> <b> >> </b> </small> ${action} from (<b>${(pX / RESOLUTION)}</b> , <b>${(pY / RESOLUTION)}</b>) to (<b>${(X / RESOLUTION)}</b> , <b>${(Y / RESOLUTION)}</b>) <br><br>`; } 
+	function logErrorMsg (line, msg) { return `<br> [${line}] <small> <b> -> </b> </small> ${msg} <br>`; } 
+	function logValidMsg (msg) { return `<br> <small> <b> -> </b> </small> ${msg} <br>`; } 
+	function markOrigin() {
+		C.strokeStyle = `red`;
+		C.beginPath();
+		C.arc (0, 0, 10, 0, 2 * Math.PI);
+		C.stroke();
+	}
+    function onMouseDown (e) {
+        IsDragging = true;
+        DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
+    }
+    function onMouseMove (e) {
+        CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
+    //    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
+        $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
+        if (IsDragging) {
+            C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
+            drawPathToCanvas();
+        }
+    }
+    function onMouseUp() { IsDragging = false; }
+    function onWheel (e) {
+        e.preventDefault();
+        const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
+		if (zoom < 1) {
+			if (ZoomLevel <= ZOOM_MIN_LIMIT) return;
+			else ZoomLevel -= ZOOM_STEP;
+		}
+		if (1 < zoom) {
+			if (ZOOM_MAX_LIMIT <= ZoomLevel) return;
+			else ZoomLevel += ZOOM_STEP;
+		}
+		LineWidth /= zoom;
+		ZS.value = ZoomLevel;
+        C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
+        C.scale (zoom, zoom);
+        C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
+        drawPathToCanvas();
+    }
+	function plotGcode() {
+		validateGcode();
+		LOG[0].scrollIntoView (false);
+		resetZoomPan();
+	}
+	function resetZoomPan() {
+		LineWidth = DEFAULT_LINE_WIDTH;
+		C.setTransform (1, 0, 0, 1, 0, 0);
+		let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
+		C.translate (origin.x, CV.height - origin.y);
+		drawPathToCanvas();
+		ZS.value = ZoomLevel = ZOOM_DEFAULT_LEVEL;
+	}
+	function val (g) {
+		let originOffset = 0;
+		if (g == `X`) originOffset = CvOrigin.X;
+		if (g == `Y`) originOffset = CvOrigin.Y;
+		let val = parseFloat (GCode[L].split (g)[1].split (` `)[0]);
+		return RESOLUTION * ((isNaN (val) ? 0 : val) + originOffset);
+	}
+	function validateGcode() {
+		let  errFlag = false, mode, prevMode = `G0`, prevX = `X0`, prevY = `Y0`,tmp = [], gc = [], GC = $(`#gCode`).val().toUpperCase();
+		LOG.html (``);
+		GC = GC.replace (/[XYIJ][ \n]/gi, g => g[0] + `0 ` + g[1]).split (`\n`);
+		LOG.html (LOG.html() + logValidMsg (`Axis zero fill complete.`));
+		for (let i = 0; i < GC.length; i++) {
+			GC[i] = GC[i].trim();
+			if (/[^GXY]/i.test (GC[i][0])) continue;
+			GC[i] = GC[i].split (` `);
+			tmp = [];
+			for (let j = 0; j < GC[i].length; j++) {
+				GC[i][j] = GC[i][j].trim();
+				if (/[^GIJXY]/i.test (GC[i][j][0])) continue;
+				tmp.push (GC[i][j]);
+			}
+			gc.push (tmp.join (` `));
+		}
+		GC = gc;
+		LOG.html (LOG.html() + logValidMsg (`Auto-format complete.`));
+		for (let i = 0; i < GC.length; i++) {
+			if (GC[i][0] == `G`)
+				if (/[01239]/.test (GC[i][1])) prevMode = GC[i].split (` `)[0];
+				else LOG.html (LOG.html() + logErrorMsg (i + 1, `G-code Error: mode number missing.`));
+			else GC[i] = prevMode + ` ` + GC[i];
+		}
+		LOG.html (LOG.html() + logValidMsg (`G modes filled.`));
+		for (let i = 0; i < GC.length; i++) {
+			mode = parseInt (GC[i].slice (1, 3));
+			switch (mode) {
+				case 0 :
+				case 1 :
+				case 2 :
+				case 3 :
+				case 92 :
+					if (!(/[XY]/.test (GC[i]))) {
+						LOG.html (LOG.html() + logErrorMsg (i + 1, `Axis Word Error: atleast one axis word required.`));
+						errFlag = true;
+					}else {
+						GC[i] = GC[i].split (` `);
+						if (GC[i][1][0] != `X`) GC[i].splice (1, 0, prevX);
+						if (!(/[Y]/.test (GC[i][2]))) GC[i][2] = prevY;
+						prevX = GC[i][1];
+						prevY = GC[i][2];
+						GC[i] = GC[i].join (` `);
+					}
+					if (mode == 2 || mode == 3) {
+						if (!(/[IJ]/.test (GC[i]))) {
+							LOG.html (LOG.html() + logErrorMsg (i + 1, `Arc Offset Error: atleast one offset required.`));
+							errFlag = true;
+						}else {
+							GC[i] = GC[i].split (` `);
+							if (GC[i][3][0] != `I`) GC[i].splice (3, 0, `I0`);
+							if (!(/[J]/.test (GC[i][4]))) GC[i][4] = `J0`;
+							GC[i] = GC[i].join (` `);
+						}
+					}
+					break;
+				default : 
+					LOG.html (LOG.html() + logErrorMsg (i + 1, `Movement Mode Error: Invalid Command.`));
+					errFlag = true;
+			}
+//			if (errFlag) break;
+		}
+		if (errFlag) {
+			GCode = ``;
+		}else {
+			LOG.html (LOG.html() + logValidMsg (`Axis words filled.`));
+			GCode = GC.join (` `).split (`G`);
+			console.log (`processed G code`);
+			for (let i = 0; i < GC.length; i++) console.log (`[${i}]: ${GC[i]}`);
+		}
+	}
+	function zoomChange() {
+		const zoom = (ZoomLevel - ZS.value) < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
+		while (ZoomLevel != ZS.value) {
+			LineWidth /= zoom;
+			C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
+			C.scale (zoom, zoom);
+			C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
+			drawPathToCanvas();
+			if (zoom < 1) ZoomLevel -= ZOOM_STEP;
+			if (1 < zoom) ZoomLevel += ZOOM_STEP;
+		}
+	}
+    CV.addEventListener (`mousedown`, onMouseDown);
+    CV.addEventListener (`mousemove`, onMouseMove);
+    CV.addEventListener (`mouseup`, onMouseUp);
+    CV.addEventListener (`wheel`, onWheel);
+	ZS.addEventListener (`input`, zoomChange);
+	
+	let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
+	C.translate (origin.x, CV.height - origin.y);
+	drawPathToCanvas();
+</script>
+</body>
+</html>
