@@ -118,7 +118,7 @@ const ZOOM_STEP = 1;
 	const ZOOM_MAX_LIMIT = 100;
 	const ZOOM_MIN_LIMIT = 1;
 	const ZOOM_SCALE_STEP = 0.2;
-	let CurrentTransformedCursor;
+    	let CurrentTransformedCursor;
 	let CvOrigin = { X: 0, Y: 0 };
     	let DragStartPosition = { x: 0, y: 0 };
 	let GCode = ``;
@@ -128,19 +128,20 @@ const ZOOM_STEP = 1;
 	let X, Y, pX, pY;
 	let ZoomLevel = ZOOM_DEFAULT_LEVEL;
 
-	function drawPathToCanvas() {
-		C.save();
-		C.setTransform (1, 0, 0, 1, 0, 0);
-		C.clearRect (0, 0, CV.width, CV.height);
-		C.restore();
+    	function drawPathToCanvas() {
+        	C.save();
+        	C.setTransform (1, 0, 0, 1, 0, 0);
+        	C.clearRect (0, 0, CV.width, CV.height);
+        	C.restore();
 		C.lineWidth = LineWidth;
-		markOrigin();
+		markPoint (`origin`);
 		interpretGcode();
-	}
-	function getTransformedPoint (x, y) {
+		markPoint (`end`);
+    	}
+    	function getTransformedPoint (x, y) {
 		const originalPoint = new DOMPoint (x, y);
 		return C.getTransform().invertSelf().transformPoint (originalPoint);
-	}
+    	}
 	function interpretGcode() {
 		if (GCode == ``) return;
 		LOG.html (``);
@@ -194,8 +195,11 @@ const ZOOM_STEP = 1;
 				
 				
 				case `92` :
-					CvOrigin.X = X - val (`X`);
-					CvOrigin.Y = Y - val (`Y`);
+					X = val (`X`);
+					Y = val (`Y`);
+					CvOrigin.X = pX - X;
+					CvOrigin.Y = pY - Y;
+					markPoint (`offset`);
 					LOG.html (LOG.html() + logActionMsg (`Set`));
 					break;
 			}
@@ -212,27 +216,40 @@ const ZOOM_STEP = 1;
 	function logActionMsg (action) { return `${L} <small> <b> >> </b> </small> ${action} from (<b>${(pX / RESOLUTION)}</b> , <b>${(pY / RESOLUTION)}</b>) to (<b>${(X / RESOLUTION)}</b> , <b>${(Y / RESOLUTION)}</b>) <br><br>`; } 
 	function logErrorMsg (line, msg) { return `<br> [${line}] <small> <b> -> </b> </small> ${msg} <br>`; } 
 	function logValidMsg (msg) { return `<br> <small> <b> -> </b> </small> ${msg} <br>`; } 
-	function markOrigin() {
-		C.strokeStyle = `red`;
+	function markPoint (p) {
+		let h = 0, k = 0, lineColor = `cyan`;
+		switch (p) {
+			case `end` :
+				lineColor = `blue`;
+			case `offset` :
+				h = X;
+				k = Y;
+				break;
+			case `origin` :
+			case `start` :
+				lineColor = `red`;
+				break;
+		}
+		C.strokeStyle = lineColor;
 		C.beginPath();
-		C.arc (0, 0, 10, 0, 2 * Math.PI);
+		C.arc (h, k, 10, 0, 2 * Math.PI);
 		C.stroke();
 	}
-	function onMouseDown (e) {
+    	function onMouseDown (e) {
         	IsDragging = true;
         	DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
-	}
-	function onMouseMove (e) {
-        	CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
-	//    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
-        	$(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
-        	if (IsDragging) {
-            		C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
-            		drawPathToCanvas();
-        	}
     	}
-	function onMouseUp() { IsDragging = false; }
-	function onWheel (e) {
+	function onMouseMove (e) {
+		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
+		//    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
+		$(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
+		if (IsDragging) {
+	    		C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
+	    		drawPathToCanvas();
+		}
+	}
+    	function onMouseUp() { IsDragging = false; }
+    	function onWheel (e) {
         	e.preventDefault();
         	const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
 		if (zoom < 1) {
