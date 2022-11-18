@@ -36,8 +36,7 @@
 	}
 </style>
 <script>
-	const DR = document.querySelector (`:root`);
-	const R = getComputedStyle (DR);
+	const R = getComputedStyle (document.querySelector (`:root`));
 	const sideBarWidth = R.getPropertyValue (`--sideBarWidth`).slice (0, -2);
 	var sideBarOpen = true;
 	window.onhashchange = () => { if (sideBarOpen) menu(); };
@@ -323,31 +322,31 @@ G1 X16.94 Y-1.96
 	const ZOOM_MAX_LIMIT = 100;
 	const ZOOM_MIN_LIMIT = 1;
 	const ZOOM_SCALE_STEP = 0.5;
-    let CurrentTransformedCursor;
+	let CurrentTransformedCursor;
 	let CvOrigin = { X: 0, Y: 0 };
-    let DragStartPosition = { x: 0, y: 0 };
+	let DragStartPosition = { x: 0, y: 0 };
 	let GCode = ``;
-    let IsDragging = false;
+	let IsDragging = false;
 	let L;
 	let LineWidth = DEFAULT_LINE_WIDTH;
 	let Logged = false;
 	let X, Y, pX, pY;
 	let ZoomLevel = ZOOM_DEFAULT_LEVEL;
 
-    function drawPathToCanvas() {
-        C.save();
-        C.setTransform (1, 0, 0, 1, 0, 0);
-        C.clearRect (0, 0, CV.width, CV.height);
-        C.restore();
+	function drawPathToCanvas() {
+		C.save();
+		C.setTransform (1, 0, 0, 1, 0, 0);
+		C.clearRect (0, 0, CV.width, CV.height);
+		C.restore();
 		C.lineWidth = LineWidth;
 		markPoint (`origin`);
 		interpretGcode();
 		markPoint (`end`);
-    }
-    function getTransformedPoint (x, y) {
+	}
+	function getTransformedPoint (x, y) {
 		const originalPoint = new DOMPoint (x, y);
 		return C.getTransform().invertSelf().transformPoint (originalPoint);
-    }
+	}
 	function interpretGcode() {
 		if (GCode == ``) return;
 		$(`#error`).html (``);
@@ -443,23 +442,23 @@ G1 X16.94 Y-1.96
 		C.strokeStyle = lC;
 		C.stroke();
 	}
-    function onMouseDown (e) {
-        IsDragging = true;
-        DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
-    }
-    function onMouseMove (e) {
-        CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
-    //    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
-        $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
-        if (IsDragging) {
-            C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
-            drawPathToCanvas();
-        }
-    }
-    function onMouseUp() { IsDragging = false; }
-    function onWheel (e) {
-        e.preventDefault();
-        const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
+	function onMouseDown (e) {
+		IsDragging = true;
+		DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
+	}
+	function onMouseMove (e) {
+		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
+		//    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
+		$(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
+		if (IsDragging) {
+			C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
+			drawPathToCanvas();
+		}
+	}
+	function onMouseUp() { IsDragging = false; }
+	function onWheel (e) {
+		e.preventDefault();
+		const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
 		if (zoom < 1) {
 			if (ZoomLevel <= ZOOM_MIN_LIMIT) return;
 			else ZoomLevel -= ZOOM_SLIDER_STEP;
@@ -470,11 +469,11 @@ G1 X16.94 Y-1.96
 		}
 		LineWidth /= zoom;
 		ZS.value = ZoomLevel;
-        C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
-        C.scale (zoom, zoom);
-        C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
-        drawPathToCanvas();
-    }
+		C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
+		C.scale (zoom, zoom);
+		C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
+		drawPathToCanvas();
+	}
 	function plotGcode() {
 		validateGcode();
 		Logged = false;
@@ -582,10 +581,10 @@ G1 X16.94 Y-1.96
 			if (1 < zoom) ZoomLevel += ZOOM_SLIDER_STEP;
 		}
 	}
-    CV.addEventListener (`mousedown`, onMouseDown);
-    CV.addEventListener (`mousemove`, onMouseMove);
-    CV.addEventListener (`mouseup`, onMouseUp);
-    CV.addEventListener (`wheel`, onWheel);
+	CV.addEventListener (`mousedown`, onMouseDown);
+	CV.addEventListener (`mousemove`, onMouseMove);
+	CV.addEventListener (`mouseup`, onMouseUp);
+	CV.addEventListener (`wheel`, onWheel);
 	ZS.addEventListener (`input`, zoomChange);
 	
 	let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
