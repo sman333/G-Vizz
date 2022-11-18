@@ -17,7 +17,10 @@
 	#gCode { text-transform: uppercase; }
 	#infoBar { width: calc(100vw - (var(--sideBarWidth))); }
 	#mainContent { overflow: hidden; }
-	#sideBar { width: var(--sideBarWidth); }
+	#sideBar {
+		width: var(--sideBarWidth);
+		z-index: 1;
+	}
 	.section {
 		height: 100vh;
 		overflow-y: scroll;
@@ -50,12 +53,12 @@
 		}
 	}
 </script>
-<body class="w3-row ">
-<a href="#menu" class="w3-btn w3-black w3-hover-indigo" style="position:fixed;" onclick=menu() title="show side panel"> <i class="fa fa-bars"> </i> </a>
+<body class="w3-row">
+<a href="#menu" class="w3-btn w3-black w3-hover-indigo" style="position:fixed; z-index:1;" onclick=menu() title="show side panel"> <i class="fa fa-bars"> </i> </a>
 <div id="sideBar" class="section w3-col w3-card-4 w3-light-gray w3-animate-left">
 	<div class="w3-bar w3-card w3-black">
 		<a href="#menu" class="w3-bar-item w3-btn w3-hover-indigo" onclick=menu() title="hide side panel"> <i class="fa fa-chevron-left"> </i> </a>	
-		<b class="w3-bar-item"> G Vizz </b>
+		<b class="w3-bar-item w3-text-amber"> <i class="fa fa-diamond w3-text-aqua"> </i> G Vizz </b>
 		<b class="w3-bar-item w3-btn w3-hover-red w3-right" onclick=settings() title="settings"> <i class="fa fa-cog"> </i> </b>	
 	</div>
 	<div class="w3-padding-small" style="min-height:100vh;">
@@ -63,7 +66,201 @@
 			<i class="w3-btn w3-large w3-light-green fa fa-save" title="SAVE"> </i>
 			<i class="w3-btn w3-large w3-orange fa fa-upload" title="UPLOAD"> </i>
 		</p>
-		<textarea rows="15" id="gCode" class="w3-input w3-border" oninput="this.value=this.value.toUpperCase()">
+		<textarea rows="15" id="gCode" class="w3-input w3-border">
+
+G41 H200 
+G1 X34.64 Y0.
+G3 X38.997 Y-1.875 I4.3571 J4.125
+G1 X70.997
+G3 X75.354 Y0. I0. J6.
+G1 X110.5
+
+G0 Y-10.
+G1 X75.354
+Y-10.4
+G0 X110.5
+
+Y-20.4
+G1 X75.354
+Y-20.8
+G0 X110.5
+
+Y-30.8
+G1 X75.354
+Y-31.2
+G0 X110.5
+
+Y-41.2
+G1 X75.354
+Y-41.6
+G0 X110.5
+
+Y-51.6
+G1 X75.12
+Y-52.
+G0 X110.5
+
+Y-62.
+G1 X75.354
+Y-62.4
+G0 X110.5
+
+Y-72.4
+G1 X75.354
+Y-72.8
+G0 X110.5
+
+Y-82.8
+G1 X75.354
+Y-83.2
+G0 X110.5
+
+Y-93.2
+G1 X75.354
+Y-93.6
+G0 X110.5
+
+
+Y0.5
+G40 G1 Y1.
+G0 X-0.5
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+
+G42 H200
+G0 Y-10.
+G1 X34.64
+G2 X38.997 Y-8.125 I4.3571 J-4.125
+G1 X70.997
+G2 X75.354 Y-10. I0 J-6.
+G1 Y-10.4
+G2 X70.997 Y-12.275 I-4.3571 J4.125
+G1 X38.997
+G2 X34.64 Y-10.4 I0. J6.
+G0 X-0.5
+G40 G1 X-1.
+G92 Y0.
+			
+			
+			
+			
+
+
+
+		</textarea>
+
+<!--
+
 
 g1 x14.992
 g2 x15.09 y-0.584 j-0.3
@@ -76,13 +273,20 @@ G1 X5.04 Y27.2
 G2 X16.94 Y26.11 I5.9 J-1.09
 G1 X16.94 Y-1.96
 
-		</textarea>
+
+-->
+<!--
+
+
+
+
+-->
 		<p id="statusBar"></p>
 		<b class="w3-btn w3-block w3-round-xxlarge w3-indigo w3-hover-black w3-margin-top" title="DRAW PATH" onclick=plotGcode()> <i class="fa fa-play"> </i> PLOT </b>
 		<br>
-		<div class="w3-black w3-padding-small">
+		<div class="w3-black">
 			<center> <b> Action Log </b> </center> <br>
-			<p id="log" class="w3-small"> </p>
+			<ol id="log" class="w3-small" style="padding-left:40px; width:100%;"> </ol>
 		</div>
 	</div>
 	<div class="w3-black w3-center">
@@ -111,44 +315,45 @@ G1 X16.94 Y-1.96
 	const VP = document.getElementById (`mainContent`);
 	const ZS = document.getElementById (`zoom`);
 	const DEFAULT_LINE_WIDTH = 2;
+	const MARK_POINT_RADIUS = 10;
 	const RADIUS_ERROR_THRESHOLD = 0.001;
 	const RESOLUTION = 1000;
 	const ZOOM_DEFAULT_LEVEL = 50;
-const ZOOM_STEP = 1;
+	const ZOOM_SLIDER_STEP = 1;
 	const ZOOM_MAX_LIMIT = 100;
 	const ZOOM_MIN_LIMIT = 1;
-	const ZOOM_SCALE_STEP = 0.2;
-    	let CurrentTransformedCursor;
+	const ZOOM_SCALE_STEP = 0.5;
+    let CurrentTransformedCursor;
 	let CvOrigin = { X: 0, Y: 0 };
-    	let DragStartPosition = { x: 0, y: 0 };
+    let DragStartPosition = { x: 0, y: 0 };
 	let GCode = ``;
-    	let IsDragging = false;
+    let IsDragging = false;
 	let L;
 	let LineWidth = DEFAULT_LINE_WIDTH;
+	let Logged = false;
 	let X, Y, pX, pY;
 	let ZoomLevel = ZOOM_DEFAULT_LEVEL;
 
-    	function drawPathToCanvas() {
-        	C.save();
-        	C.setTransform (1, 0, 0, 1, 0, 0);
-        	C.clearRect (0, 0, CV.width, CV.height);
-        	C.restore();
+    function drawPathToCanvas() {
+        C.save();
+        C.setTransform (1, 0, 0, 1, 0, 0);
+        C.clearRect (0, 0, CV.width, CV.height);
+        C.restore();
 		C.lineWidth = LineWidth;
 		markPoint (`origin`);
 		interpretGcode();
 		markPoint (`end`);
-    	}
-    	function getTransformedPoint (x, y) {
+    }
+    function getTransformedPoint (x, y) {
 		const originalPoint = new DOMPoint (x, y);
 		return C.getTransform().invertSelf().transformPoint (originalPoint);
-    	}
+    }
 	function interpretGcode() {
 		if (GCode == ``) return;
-		LOG.html (``);
 		$(`#error`).html (``);
 		let lineColor, I, J, H, K, R, sAngle, eAngle, antiClock = false, calcRadius, error = false, errMsg;
-		pX = CvOrigin.X;
-		pY = CvOrigin.Y;
+		pX = CvOrigin.X = 0;
+		pY = CvOrigin.Y = 0;
 		for (L = 1; L < GCode.length; L++) {
 			antiClock = false;
 			C.beginPath();
@@ -159,14 +364,14 @@ const ZOOM_STEP = 1;
 					X = val (`X`);
 					Y = val (`Y`);
 					C.lineTo (X, Y);
-					LOG.html (LOG.html() + logActionMsg (`Move`));
+					updateActionLog (`Move`);
 					break;
 				case `1` :
 					lineColor = `orange`;
 					X = val (`X`);
 					Y = val (`Y`);
 					C.lineTo (X, Y);
-					LOG.html (LOG.html() + logActionMsg (`Cut`));
+					updateActionLog (`Cut`);
 					break;
 				case `2` :
 					antiClock = true;
@@ -184,23 +389,21 @@ const ZOOM_STEP = 1;
 					calcRadius = Math.sqrt (Math.pow (H - X, 2) + Math.pow (K - Y, 2));
 					if (RADIUS_ERROR_THRESHOLD <= (Math.abs (R - calcRadius) / RESOLUTION)) {
 						error = true;
-						$(`#error`).html (`<b> Radius Error! </b>`);
 						errMsg = `<br> end point is ${(R < calcRadius ? `farther` : `closer`)} than expected <br>`;
 						errMsg += `expected radius ${(R / RESOLUTION)} , calculated radius ${(calcRadius / RESOLUTION)} <br><br>`;
-						LOG[0].scrollIntoView (false);
+						$(`#error`).html (`<b> Radius Error! </b> ${errMsg.replace (/<br>/g, ``)}`);
 					}
 					C.arc (H, K, R, sAngle, eAngle, antiClock);
-					LOG.html (LOG.html() + logActionMsg (`Cut Arc ${(GCode[L][0] == `3` ? `Anti-`:``)} Clockwise`));
+					updateActionLog (`Cut Arc ${(GCode[L][0] == `3` ? `Anti-`:``)} Clockwise`);
 					break;
-				
-				
 				case `92` :
+					lineColor = `cyan`;
 					X = val (`X`);
 					Y = val (`Y`);
-					CvOrigin.X = pX - X;
-					CvOrigin.Y = pY - Y;
-					markPoint (`offset`);
-					LOG.html (LOG.html() + logActionMsg (`Set`));
+					CvOrigin.X += (pX - X) / RESOLUTION;
+					CvOrigin.Y += (pY - Y) / RESOLUTION;
+					C.arc (X, Y, MARK_POINT_RADIUS, 0, 2 * Math.PI);
+					updateActionLog (`Set`);
 					break;
 			}
 			C.strokeStyle = lineColor;
@@ -210,66 +413,72 @@ const ZOOM_STEP = 1;
 			if (error) {
 				LOG.html (LOG.html() + errMsg);
 				break;
-			} 
+			}
 		}
+		Logged = true;
+		LOG[0].scrollIntoView (false);
 	}
-	function logActionMsg (action) { return `${L} <small> <b> >> </b> </small> ${action} from (<b>${(pX / RESOLUTION)}</b> , <b>${(pY / RESOLUTION)}</b>) to (<b>${(X / RESOLUTION)}</b> , <b>${(Y / RESOLUTION)}</b>) <br><br>`; } 
-	function logErrorMsg (line, msg) { return `<br> [${line}] <small> <b> -> </b> </small> ${msg} <br>`; } 
-	function logValidMsg (msg) { return `<br> <small> <b> -> </b> </small> ${msg} <br>`; } 
+	function updateActionLog (action) {
+		if (Logged) return;
+		LOG.html (LOG.html() + logActionMsg (action));
+	}
+	function logActionMsg (action) { return `<li> ${action} from (<b>${(pX / RESOLUTION).toFixed (3)}</b> , <b>${(pY / RESOLUTION).toFixed (3)}</b>) to (<b>${(X / RESOLUTION).toFixed (3)}</b> , <b>${(Y / RESOLUTION).toFixed (3)}</b>) <br> <br> </li>`; }
+	function logErrorMsg (line, msg) { return `<br> [${line}] <small> <b> -> </b> </small> ${msg} <br>`; }
+	function logValidMsg (msg) { return `<br> <small> <b> -> </b> </small> ${msg} <br>`; }
 	function markPoint (p) {
-		let h = 0, k = 0, lineColor = `cyan`;
+		let h = 0, k = 0, lC;
 		switch (p) {
 			case `end` :
-				lineColor = `blue`;
-			case `offset` :
+				lC = `blue`;
 				h = X;
 				k = Y;
 				break;
 			case `origin` :
 			case `start` :
-				lineColor = `red`;
+				lC = `red`;
 				break;
 		}
-		C.strokeStyle = lineColor;
 		C.beginPath();
-		C.arc (h, k, 10, 0, 2 * Math.PI);
+		C.arc (h, k, MARK_POINT_RADIUS, 0, 2 * Math.PI);
+		C.strokeStyle = lC;
 		C.stroke();
 	}
-    	function onMouseDown (e) {
-        	IsDragging = true;
-        	DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
-    	}
-	function onMouseMove (e) {
-		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
-		//    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
-		$(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
-		if (IsDragging) {
-	    		C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
-	    		drawPathToCanvas();
-		}
-	}
-    	function onMouseUp() { IsDragging = false; }
-    	function onWheel (e) {
-        	e.preventDefault();
-        	const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
+    function onMouseDown (e) {
+        IsDragging = true;
+        DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
+    }
+    function onMouseMove (e) {
+        CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
+    //    $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
+        $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION).toFixed (3)}`);
+        if (IsDragging) {
+            C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
+            drawPathToCanvas();
+        }
+    }
+    function onMouseUp() { IsDragging = false; }
+    function onWheel (e) {
+        e.preventDefault();
+        const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
 		if (zoom < 1) {
 			if (ZoomLevel <= ZOOM_MIN_LIMIT) return;
-			else ZoomLevel -= ZOOM_STEP;
+			else ZoomLevel -= ZOOM_SLIDER_STEP;
 		}
 		if (1 < zoom) {
 			if (ZOOM_MAX_LIMIT <= ZoomLevel) return;
-			else ZoomLevel += ZOOM_STEP;
+			else ZoomLevel += ZOOM_SLIDER_STEP;
 		}
 		LineWidth /= zoom;
 		ZS.value = ZoomLevel;
-        	C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
-        	C.scale (zoom, zoom);
-        	C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
-        	drawPathToCanvas();
-    	}
+        C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
+        C.scale (zoom, zoom);
+        C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
+        drawPathToCanvas();
+    }
 	function plotGcode() {
 		validateGcode();
-		LOG[0].scrollIntoView (false);
+		Logged = false;
+		LOG.html (``);
 		resetZoomPan();
 	}
 	function resetZoomPan() {
@@ -307,12 +516,12 @@ const ZOOM_STEP = 1;
 		GC = gc;
 		LOG.html (LOG.html() + logValidMsg (`Auto-format complete.`));
 		for (let i = 0; i < GC.length; i++) {
-			if (GC[i][0] == `G`)
+			if (GC[i][0] == `G`) {
 				if (/[01239]/.test (GC[i][1])) prevMode = GC[i].split (` `)[0];
-				else LOG.html (LOG.html() + logErrorMsg (i + 1, `G-code Error: mode number missing.`));
-			else GC[i] = prevMode + ` ` + GC[i];
+			}else GC[i] = prevMode + ` ` + GC[i];
 		}
 		LOG.html (LOG.html() + logValidMsg (`G modes filled.`));
+		gc = [];
 		for (let i = 0; i < GC.length; i++) {
 			mode = parseInt (GC[i].slice (1, 3));
 			switch (mode) {
@@ -343,13 +552,14 @@ const ZOOM_STEP = 1;
 							GC[i] = GC[i].join (` `);
 						}
 					}
+					gc.push (GC[i]);
 					break;
-				default : 
-					LOG.html (LOG.html() + logErrorMsg (i + 1, `Movement Mode Error: Invalid Command.`));
-					errFlag = true;
+				default :
+					LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${mode}]`));
 			}
 //			if (errFlag) break;
 		}
+		GC = gc;
 		if (errFlag) {
 			GCode = ``;
 		}else {
@@ -358,6 +568,7 @@ const ZOOM_STEP = 1;
 			console.log (`processed G code`);
 			for (let i = 0; i < GC.length; i++) console.log (`[${i}]: ${GC[i]}`);
 		}
+		LOG[0].scrollIntoView (false);
 	}
 	function zoomChange() {
 		const zoom = (ZoomLevel - ZS.value) < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
@@ -367,14 +578,14 @@ const ZOOM_STEP = 1;
 			C.scale (zoom, zoom);
 			C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
 			drawPathToCanvas();
-			if (zoom < 1) ZoomLevel -= ZOOM_STEP;
-			if (1 < zoom) ZoomLevel += ZOOM_STEP;
+			if (zoom < 1) ZoomLevel -= ZOOM_SLIDER_STEP;
+			if (1 < zoom) ZoomLevel += ZOOM_SLIDER_STEP;
 		}
 	}
-    	CV.addEventListener (`mousedown`, onMouseDown);
-    	CV.addEventListener (`mousemove`, onMouseMove);
-    	CV.addEventListener (`mouseup`, onMouseUp);
-    	CV.addEventListener (`wheel`, onWheel);
+    CV.addEventListener (`mousedown`, onMouseDown);
+    CV.addEventListener (`mousemove`, onMouseMove);
+    CV.addEventListener (`mouseup`, onMouseUp);
+    CV.addEventListener (`wheel`, onWheel);
 	ZS.addEventListener (`input`, zoomChange);
 	
 	let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
