@@ -25,6 +25,11 @@
 		scroll-behavior: smooth;
 		width: 104%;
 	}
+	.beat { animation: beat 500ms infinite alternate; }
+	@keyframes beat {
+		from { transform: scale(1.1, 1.1); }
+		to { transform: scale(1, 1); }
+	}
 	.section {
 		height: 100vh;
 		overflow-y: scroll;
@@ -41,6 +46,7 @@
 		max-width: 100%;
 		min-width: 100%;
 	}
+
 </style>
 <script defer>
 	const R = getComputedStyle ($(`:root`)[0]);
@@ -70,225 +76,8 @@
 	<div style="min-height:100vh;">
 		<p> <input type="file" id="openFile" class="w3-input w3-border" accept=".nc, .txt" /> </p>
 		<p> <i> ( drag and drop .nc file ) </i> <i class="w3-btn w3-large w3-light-green fa fa-save w3-right" onclick=saveFile() title="Save File"> </i> </p>
-		<textarea rows="15" class="w3-input w3-border">
-
-G41 H200 
-G1 X34.64 Y0.
-G3 X38.997 Y-1.875 I4.3571 J4.125
-G1 X70.997
-G3 X75.354 Y0. I0. J6.
-G1 X110.5
-
-G0 Y-10.
-G1 X75.354
-Y-10.4
-G0 X110.5
-
-Y-20.4
-G1 X75.354
-Y-20.8
-G0 X110.5
-
-Y-30.8
-G1 X75.354
-Y-31.2
-G0 X110.5
-
-Y-41.2
-G1 X75.354
-Y-41.6
-G0 X110.5
-
-Y-51.6
-G1 X75.12
-Y-52.
-G0 X110.5
-
-Y-62.
-G1 X75.354
-Y-62.4
-G0 X110.5
-
-Y-72.4
-G1 X75.354
-Y-72.8
-G0 X110.5
-
-Y-82.8
-G1 X75.354
-Y-83.2
-G0 X110.5
-
-Y-93.2
-G1 X75.354
-Y-93.6
-G0 X110.5
-
-Y0.5
-G40 G1 Y1.
-G0 X-0.5
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-G42 H200
-G0 Y-10.
-G1 X34.64
-G2 X38.997 Y-8.125 I4.3571 J-4.125
-G1 X70.997
-G2 X75.354 Y-10. I0 J-6.
-G1 Y-10.4
-G2 X70.997 Y-12.275 I-4.3571 J4.125
-G1 X38.997
-G2 X34.64 Y-10.4 I0. J6.
-G0 X-0.5
-G40 G1 X-1.
-G92 Y0.
-
-		</textarea>
-
-<!--
-
-g1 x14.992
-g2 x15.09 y-0.584 j-0.3
-g3 x0 y-10.275 i12.41 j-35.916
-g1 y-12
-
-G1 X0.5 Y0
-G1 X0 Y0
-G1 X5.04 Y27.2
-G2 X16.94 Y26.11 I5.9 J-1.09
-G1 X16.94 Y-1.96
-
-g92 x y 
-
-g1 x14.992
-g2 x15.09 y-0.584 j-0.3
-g3 x0 y-10.275 i12.41 j-35.916
-g1 y-12
-
-G1 X0.5 Y0
-G1 X0 Y0
-G1 X5.04 Y27.2
-G2 X16.94 Y26.11 I5.9 J-1.09
-G1 X16.94 Y-1.96
-
-
--->
-<!--
-
-
-
--->
+		<noscript> <h5 class="w3-padding w3-center w3-text-red w3-yellow beat"> <b> <i> This browser does not support script or script has been disabled. </i> <br> Please enable script or use another browser. </b> </h5> </noscript>
+		<textarea rows="15" class="w3-input w3-border"> </textarea>
 		<p id="statusBar"></p>
 		<b class="w3-btn w3-block w3-round-xxlarge w3-indigo w3-hover-black w3-margin-top" title="DRAW PATH" onclick=plotGcode()> <i class="fa fa-play"> </i> GENERATE PATH </b>
 		<label class="w3-center w3-block w3-margin-top"> <input type="checkbox" class="w3-check" id="liveUpdate" /> Live Update </label>
@@ -309,11 +98,12 @@ G1 X16.94 Y-1.96
 		<p id="error" class="w3-red w3-text-black w3-center"> </p>
 		<div class="w3-bar">
 			<i id="mousePos" class="w3-bar-item"> </i>
+<i id="lineNo" class="w3-bar-item"> </i>
 			<i class="w3-bar-item w3-right w3-small w3-button w3-hover-blue" onclick=resetZoomPan()> RESET </b> </i>
 			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-plus" onclick=ZS.stepUp();zoomChange();> </i>
 			<i class="w3-bar-item w3-right"> <input type="range" min="1" max="100" step="1" value="50" id="zoomSlider" /> </i>
 			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-minus" onclick=ZS.stepDown();zoomChange();> </i>
-			<b id="measurementTool" class="w3-bar-item w3-right w3-small w3-button w3-green w3-hover-light-green"> <i class="fa fa-expand w3-large"> </i> Measure Distance </b>
+			<!-- <b id="measurementTool" class="w3-bar-item w3-right w3-small w3-button w3-green w3-hover-light-green"> <i class="fa fa-expand w3-large"> </i> Measure Distance </b> -->
 		</div>
 	</div>
 </div>
@@ -328,13 +118,13 @@ G1 X16.94 Y-1.96
 	const ZS = $(`#zoomSlider`)[0];
 	const DEFAULT_LINE_WIDTH = 2;
 	const MARK_POINT_RADIUS = 10;
-	const RADIUS_ERROR_THRESHOLD = 0.001;		// milli meter
+	const RADIUS_ERROR_THRESHOLD = 0.001;		// in millimeter
 	const RESOLUTION = 1000;
 	const ZOOM_DEFAULT_LEVEL = 50;
 	const ZOOM_SLIDER_STEP = 1;
 	const ZOOM_MAX_LIMIT = 100;
 	const ZOOM_MIN_LIMIT = 1;
-	const ZOOM_SCALE_STEP = 0.5;		// 0.0 to 1.0
+	const ZOOM_SCALE_STEP = 0.5;				// 0.0 to 1.0
 	let SelStart, SelEnd;
 	let CurrentTransformedCursor;
 	let CvOrigin = { X: 0, Y: 0 };				// canvas origin
@@ -342,7 +132,7 @@ G1 X16.94 Y-1.96
 	let FileName = ``, GCode = ``;
 	let IsDragging = false;
 	let HighlightColor;
-	let InputCommandMap = [];				// g-code editor (textarea) line no. map to cleaned g-code line no.
+	let InputCommandMap = [];					// g-code editor (textarea) line no. map to cleaned g-code line no.
 	let SelInterval, AnimeInterval;
 	let L, X, Y, pX, pY;
 	let LineWidth = DEFAULT_LINE_WIDTH;
@@ -428,7 +218,9 @@ G1 X16.94 Y-1.96
 					Y = val (`Y`);
 					CvOrigin.X += (pX - X) / RESOLUTION;
 					CvOrigin.Y -= (pY - Y) / RESOLUTION;
+					C.moveTo (X + MARK_POINT_RADIUS, Y);
 					C.arc (X, Y, MARK_POINT_RADIUS, 0, 2 * Math.PI);
+					C.moveTo (pX, pY);
 					updateActionLog (`Set`);
 					break;
 			}
@@ -479,13 +271,14 @@ G1 X16.94 Y-1.96
 		LineWidth = DEFAULT_LINE_WIDTH;
 		C.setTransform (1, 0, 0, 1, 0, 0);
 		let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
-		C.translate (origin.x, CV.height - origin.y);
+		C.translate (origin.x, origin.y);
 		drawPathToCanvas();
 		ZS.value = ZoomLevel = ZOOM_DEFAULT_LEVEL;
 	}
 	function saveFile() {
 		$(`body`).append (`<a id="downloadLink" download="${FileName.slice (0, -3)} G_Vizz ${timeFormat (`%d_%D_%N_%Y %h_%m_%s`)}.NC" href="${URL.createObjectURL (new Blob ([GC_ED.value.toUpperCase()], { "type": "application/x-netcdf" }))}"> </a>`);
-		$(`#downloadLink`).click().remove();
+		$(`#downloadLink`)[0].click();
+		$(`#downloadLink`).remove();
 	}
 	function timeFormat (format, t = new Date()) {
 		const month = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
@@ -508,14 +301,16 @@ G1 X16.94 Y-1.96
 		let originOffset = 0;
 		if (g == `X`) originOffset = CvOrigin.X;
 		if (g == `Y`) originOffset = CvOrigin.Y;
-		let val = parseFloat (GCode[L].split (g)[1].split (` `)[0]);
+		let val = GCode[L].split (g)[1].split (` `)[0];
+		val = val.includes (`.`) ? parseFloat (val) : (parseFloat (val) / 1000);
 		return RESOLUTION * ((isNaN (val) ? 0 : val) + originOffset) * ((g == `J` || g == `Y`) ? -1 : 1);
 	}
 	function validateGcode() {
 		let  errFlag = false, mode, prevMode = `G0`, prevX = `X0`, prevY = `Y0`,tmp = [], gc = [], GC = GC_ED.value.toUpperCase();
 		InputCommandMap = [];
 		LOG.html (``);
-		GC = GC.replace (/[XYIJ][ \n]/gi, g => g[0] + `0 ` + g[1]).split (`\n`);
+		GC = GC.replace (/[XYIJ][ \n]/gi, g => g[0] + `0 ` + g[1]);
+		GC = GC.replace (/G[4-8][0-9]/gi, ``).split (`\n`);
 		LOG.html (LOG.html() + logValidMsg (`Axis zero fill complete.`));
 		for (let i = 0; i < GC.length; i++) {
 			GC[i] = GC[i].trim();
@@ -572,7 +367,8 @@ G1 X16.94 Y-1.96
 					gc.push (GC[i]);
 					break;
 				default :
-					LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${mode}]`));
+// LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${mode}]`));
+					LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${GC[i]}]`));
 			}
 // if (errFlag) break;
 		}
@@ -583,7 +379,8 @@ G1 X16.94 Y-1.96
 			GCode = gc.join (` `).split (`G`);
 			InputCommandMap.unshift (``);
 			console.log (`processed G code`);
-			for (let i = 0; i < GC.length; i++) console.log (`[${i}]: ${GC[i]}`);
+			for (let i = 0; i < gc.length; i++) console.log (`[${i}]: ${gc[i]}`);
+// console.log (InputCommandMap);
 		}
 // LOG[0].scrollIntoView (false);
 	}
@@ -606,7 +403,8 @@ G1 X16.94 Y-1.96
 	CV.onmousemove = e => {
 		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
 // $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
-		$(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION * -1).toFixed (3)}`);
+// $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION * -1).toFixed (3)}`);
+		$(`#mousePos`).html (`x: ${((CurrentTransformedCursor.x / RESOLUTION) + CvOrigin.X).toFixed (3)} &nbsp; y: ${((CurrentTransformedCursor.y / RESOLUTION) + CvOrigin.Y).toFixed (3)}`);
 		if (IsDragging) {
 			C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
 			drawPathToCanvas();
@@ -661,6 +459,7 @@ G1 X16.94 Y-1.96
 	GC_ED.onfocus = () => {
 		clearInterval (SelInterval);
 		SelInterval = setInterval (() => {
+$('#lineNo').html (GC_ED.value.slice (0, GC_ED.selectionStart).split (`\n`).length);
 			if (SelStart != GC_ED.selectionStart || SelEnd != GC_ED.selectionEnd) {
 				drawPathToCanvas();
 				SelStart = GC_ED.selectionStart;
@@ -677,7 +476,7 @@ G1 X16.94 Y-1.96
 	ZS.oninput = zoomChange;
 
 	let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
-	C.translate (origin.x, CV.height - origin.y);
+	C.translate (origin.x, origin.y);
 	drawPathToCanvas();
 </script>
 </body>
