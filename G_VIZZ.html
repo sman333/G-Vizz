@@ -46,7 +46,6 @@
 		max-width: 100%;
 		min-width: 100%;
 	}
-
 </style>
 <script defer>
 	const R = getComputedStyle ($(`:root`)[0]);
@@ -74,21 +73,24 @@
 		<b class="w3-bar-item w3-btn w3-hover-red w3-right" onclick=settings() title="settings"> <i class="fa fa-cog"> </i> </b>	
 	</div>
 	<div style="min-height:100vh;">
-		<p> <input type="file" id="openFile" class="w3-input w3-border" accept=".nc, .txt" /> </p>
-		<p> <i> ( drag and drop .nc file ) </i> <i class="w3-btn w3-large w3-light-green fa fa-save w3-right" onclick=saveFile() title="Save File"> </i> </p>
-		<noscript> <h5 class="w3-padding w3-center w3-text-red w3-yellow beat"> <b> <i> This browser does not support script or script has been disabled. </i> <br> Please enable script or use another browser. </b> </h5> </noscript>
-		<textarea rows="15" class="w3-input w3-border"> </textarea>
+		<center> <b> <i> <p> <input type="file" id="openFile" class="w3-input w3-border" accept=".nc, .txt" /> <small> ( drag and drop .nc file ) </small> </p> </i> </b> </center>
+		<i class="w3-btn w3-large w3-right w3-hover-text-black w3-hover-light-green w3-border w3-border-green w3-text-green fa fa-save" onclick=saveFile() title="Save File"> </i>
+		<i class="w3-btn w3-large w3-right w3-hover-text-black w3-hover-deep-orange w3-border w3-border-red w3-text-red fa fa-image" onclick=IMG.toggle();ShowPreview=!ShowPreview; title="Save as Image / Screenshot"> </i>
+		<img src="" class="w3-image" style="display:none;" />
+		<center> <small> <b> <i> (to save as image, right click on plot) </i> </b> </small> </center> 
+		<noscript> <h5 class="w3-padding w3-center w3-text-red w3-yellow beat"> <b> <i> This browser does not support script or script has been disabled. </i> <br/> Please enable script or use another browser. </b> </h5> </noscript>
+		<b> <textarea rows="20" class="w3-input w3-border w3-small"></textarea> </b>
 		<p id="statusBar"></p>
 		<b class="w3-btn w3-block w3-round-xxlarge w3-indigo w3-hover-black w3-margin-top" title="DRAW PATH" onclick=plotGcode()> <i class="fa fa-play"> </i> GENERATE PATH </b>
 		<label class="w3-center w3-block w3-margin-top"> <input type="checkbox" class="w3-check" id="liveUpdate" /> Live Update </label>
-		<br>
+		<br/>
 		<div class="w3-black actionLog">
-			<center> <b> Action Log </b> </center> <br>
+			<center> <b> Action Log </b> </center> <br/>
 			<ol id="log" class="w3-tiny" style="padding-left:35px; width:100%;"> </ol>
 		</div>
 	</div>
 	<div class="w3-black w3-center">
-		<i> <small> G Code Visualising Tool <br> Powered by
+		<i> <small> G Code Visualising Tool <br/> Powered by
 		<a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity w3-text-white"> w3.css </a> </small> </i>
 	</div>
 </div>
@@ -98,24 +100,24 @@
 		<p id="error" class="w3-red w3-text-black w3-center"> </p>
 		<div class="w3-bar">
 			<i id="mousePos" class="w3-bar-item"> </i>
-<i id="lineNo" class="w3-bar-item"> </i>
 			<i class="w3-bar-item w3-right w3-small w3-button w3-hover-blue" onclick=resetZoomPan()> RESET </b> </i>
-			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-plus" onclick=ZS.stepUp();zoomChange();> </i>
+			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-plus" onclick=ZOOM_SLIDER.stepUp();zoomChange();> </i>
 			<i class="w3-bar-item w3-right"> <input type="range" min="1" max="100" step="1" value="50" id="zoomSlider" /> </i>
-			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-minus" onclick=ZS.stepDown();zoomChange();> </i>
+			<i class="w3-bar-item w3-right w3-button w3-hover-indigo fa fa-search-minus" onclick=ZOOM_SLIDER.stepDown();zoomChange();> </i>
 			<!-- <b id="measurementTool" class="w3-bar-item w3-right w3-small w3-button w3-green w3-hover-light-green"> <i class="fa fa-expand w3-large"> </i> Measure Distance </b> -->
 		</div>
 	</div>
 </div>
 <script defer>
-	const CV = $(`canvas`)[0];
-	const C = CV.getContext (`2d`);
+	const CANVAS = $(`canvas`)[0];
+	const C = CANVAS.getContext (`2d`);
 	const DROP_AREA = $(`#sideBar`)[0];
 	const GC_ED = $(`textarea`)[0];
 	const FILE_INPUT = $(`#openFile`)[0];
+	const IMG = $(`img`);
 	const LOG = $(`#log`);
-	const VP = $(`#mainContent`)[0];
-	const ZS = $(`#zoomSlider`)[0];
+	const VIEW_PORT = $(`#mainContent`)[0];
+	const ZOOM_SLIDER = $(`#zoomSlider`)[0];
 	const DEFAULT_LINE_WIDTH = 2;
 	const MARK_POINT_RADIUS = 10;
 	const RADIUS_ERROR_THRESHOLD = 0.001;		// in millimeter
@@ -133,12 +135,12 @@
 	let IsDragging = false;
 	let HighlightColor;
 	let InputCommandMap = [];					// g-code editor (textarea) line no. map to cleaned g-code line no.
+	let ShowPreview = false;
 	let SelInterval, AnimeInterval;
 	let L, X, Y, pX, pY;
 	let LineWidth = DEFAULT_LINE_WIDTH;
 	let Logged = false;
 	let ZoomLevel = ZOOM_DEFAULT_LEVEL;
-
 	function actColor (a) {
 		let c = `white`;
 		a = a.split (` `)[0];
@@ -158,6 +160,7 @@
 		markPoint (`origin`);
 		interpretGcode();
 		markPoint (`end`);
+		if (ShowPreview) CANVAS.toBlob (blob => IMG[0].src = URL.createObjectURL (blob));
 	}
 	function getTransformedPoint (x, y) {
 		const originalPoint = new DOMPoint (x, y);
@@ -239,9 +242,9 @@
 		}
 		Logged = true;
 	}
-	function logActionMsg (action) { return `<li class="w3-text-${actColor (action)}"> <b> ${action} </b> from (<b class="w3-small">${(pX / RESOLUTION).toFixed (3)}</b> , <b class="w3-small">${(pY / RESOLUTION * -1).toFixed (3)}</b>) to (<b class="w3-small">${(X / RESOLUTION).toFixed (3)}</b> , <b class="w3-small">${(Y / RESOLUTION * -1).toFixed (3)}</b>) <br> </li>`; }
-	function logErrorMsg (line, msg) { return `<br> [${line}] <small> <b> -> </b> </small> ${msg} <br>`; }
-	function logValidMsg (msg) { return `<br> <small> <b> -> </b> </small> ${msg} <br>`; }
+	function logActionMsg (action) { return `<li class="w3-text-${actColor (action)}"> <b> ${action} </b> from (<b class="w3-small">${(pX / RESOLUTION).toFixed (3)}</b> , <b class="w3-small">${(pY / RESOLUTION * -1).toFixed (3)}</b>) to (<b class="w3-small">${(X / RESOLUTION).toFixed (3)}</b> , <b class="w3-small">${(Y / RESOLUTION * -1).toFixed (3)}</b>) <br/> </li>`; }
+	function logErrorMsg (line, msg) { return `<br/> [${line}] <small> <b> -> </b> </small> ${msg} <br/>`; }
+	function logValidMsg (msg) { return `<br/> <small> <b> -> </b> </small> ${msg} <br/>`; }
 	function markPoint (p) {
 		let h = 0, k = 0, lC;
 		switch (p) {
@@ -270,10 +273,10 @@
 	function resetZoomPan() {
 		LineWidth = DEFAULT_LINE_WIDTH;
 		C.setTransform (1, 0, 0, 1, 0, 0);
-		let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
+		let origin = getTransformedPoint (parseInt (VIEW_PORT.clientWidth / 2), parseInt (VIEW_PORT.clientHeight / 2));
 		C.translate (origin.x, origin.y);
 		drawPathToCanvas();
-		ZS.value = ZoomLevel = ZOOM_DEFAULT_LEVEL;
+		ZOOM_SLIDER.value = ZoomLevel = ZOOM_DEFAULT_LEVEL;
 	}
 	function saveFile() {
 		$(`body`).append (`<a id="downloadLink" download="${FileName.slice (0, -3)} G_Vizz ${timeFormat (`%d_%D_%N_%Y %h_%m_%s`)}.NC" href="${URL.createObjectURL (new Blob ([GC_ED.value.toUpperCase()], { "type": "application/x-netcdf" }))}"> </a>`);
@@ -385,8 +388,8 @@
 // LOG[0].scrollIntoView (false);
 	}
 	function zoomChange() {
-		const zoom = (ZoomLevel - ZS.value) < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
-		while (ZoomLevel != ZS.value) {
+		const zoom = (ZoomLevel - ZOOM_SLIDER.value) < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
+		while (ZoomLevel != ZOOM_SLIDER.value) {
 			LineWidth /= zoom;
 			C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
 			C.scale (zoom, zoom);
@@ -396,11 +399,11 @@
 			if (1 < zoom) ZoomLevel += ZOOM_SLIDER_STEP;
 		}
 	}
-	CV.onmousedown = e => {
+	CANVAS.onmousedown = e => {
 		IsDragging = true;
 		DragStartPosition = getTransformedPoint (e.offsetX, e.offsetY);
 	}
-	CV.onmousemove = e => {
+	CANVAS.onmousemove = e => {
 		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
 // $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
 // $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION * -1).toFixed (3)}`);
@@ -410,8 +413,8 @@
 			drawPathToCanvas();
 		}
 	}
-	CV.onmouseup = () => IsDragging = false;
-	CV.onwheel = e => {
+	CANVAS.onmouseup = () => IsDragging = false;
+	CANVAS.onwheel = e => {
 		e.preventDefault();
 		const zoom = e.deltaY < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
 		if (zoom < 1) {
@@ -423,7 +426,7 @@
 			else ZoomLevel += ZOOM_SLIDER_STEP;
 		}
 		LineWidth /= zoom;
-		ZS.value = ZoomLevel;
+		ZOOM_SLIDER.value = ZoomLevel;
 		C.translate (CurrentTransformedCursor.x, CurrentTransformedCursor.y);
 		C.scale (zoom, zoom);
 		C.translate (-CurrentTransformedCursor.x, -CurrentTransformedCursor.y);
@@ -459,7 +462,6 @@
 	GC_ED.onfocus = () => {
 		clearInterval (SelInterval);
 		SelInterval = setInterval (() => {
-$('#lineNo').html (GC_ED.value.slice (0, GC_ED.selectionStart).split (`\n`).length);
 			if (SelStart != GC_ED.selectionStart || SelEnd != GC_ED.selectionEnd) {
 				drawPathToCanvas();
 				SelStart = GC_ED.selectionStart;
@@ -473,9 +475,9 @@ $('#lineNo').html (GC_ED.value.slice (0, GC_ED.selectionStart).split (`\n`).leng
 		}, 200);
 	}
 	GC_ED.oninput = () => { if ($(`#liveUpdate`)[0].checked) plotGcode(); }
-	ZS.oninput = zoomChange;
+	ZOOM_SLIDER.oninput = zoomChange;
 
-	let origin = getTransformedPoint (parseInt (VP.clientWidth / 2), parseInt (VP.clientHeight / 2));
+	let origin = getTransformedPoint (parseInt (VIEW_PORT.clientWidth / 2), parseInt (VIEW_PORT.clientHeight / 2));
 	C.translate (origin.x, origin.y);
 	drawPathToCanvas();
 </script>
