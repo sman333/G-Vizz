@@ -115,7 +115,7 @@
 	const GC_ED = $(`textarea`)[0];
 	const FILE_INPUT = $(`#openFile`)[0];
 	const IMG = $(`img`);
-	const LOG = $(`#log`);
+	const LOG = $(`#log`)[0];
 	const VIEW_PORT = $(`#mainContent`)[0];
 	const ZOOM_SLIDER = $(`#zoomSlider`)[0];
 	const DEFAULT_LINE_WIDTH = 2;
@@ -168,7 +168,7 @@
 	}
 	function interpretGcode() {
 		if (GCode == ``) return;
-		$(`#error`).html (``);
+		$(`#error`)[0].innerHTML = ``;
 		let lineColor, I, J, H, K, R, sAngle, eAngle, antiClock = false, calcRadius, error = false, errMsg;
 		pX = CvOrigin.X = 0;
 		pY = CvOrigin.Y = 0;
@@ -210,7 +210,7 @@
 						error = true;
 						errMsg = `<br> end point is <b> ${(R < calcRadius ? `farther` : `closer`)} </b> than expected <br>`;
 						errMsg += `expected radius <b> ${(R / RESOLUTION).toFixed (3)} </b> , calculated radius <b> ${(calcRadius / RESOLUTION).toFixed (3)} </b> <br><br>`;
-						$(`#error`).html (`<b> Radius Error! </b> ${errMsg.replace (/<br>/g, ``)}`);
+						$(`#error`)[0].innerHTML = `<b> Radius Error! </b> ${errMsg.replace (/<br>/g, ``)}`;
 					}
 					C.arc (H, K, R, sAngle, eAngle, antiClock);
 					updateActionLog (`Arc ${(GCode[L][0] == `3` ? `Anti-`:``)}Clockwise`);
@@ -236,7 +236,7 @@
 			pX = X;
 			pY = Y;
 			if (error) {
-				LOG.html (LOG.html() + errMsg);
+				LOG.innerHTML = LOG.innerHTML + errMsg;
 				break;
 			}
 		}
@@ -266,9 +266,9 @@
 	function plotGcode() {
 		validateGcode();
 		Logged = false;
-		LOG.html (``);
+		LOG.innerHTML = ``;
 		drawPathToCanvas();
-// LOG[0].scrollIntoView (false);
+// LOG.scrollIntoView (false);
 	}
 	function resetZoomPan() {
 		LineWidth = DEFAULT_LINE_WIDTH;
@@ -298,7 +298,7 @@
 	}
 	function updateActionLog (action) {
 		if (Logged) return;
-		LOG.html (LOG.html() + logActionMsg (action));
+		LOG.innerHTML = LOG.innerHTML + logActionMsg (action);
 	}
 	function val (g) {
 		let originOffset = 0;
@@ -311,10 +311,10 @@
 	function validateGcode() {
 		let  errFlag = false, mode, prevMode = `G0`, prevX = `X0`, prevY = `Y0`,tmp = [], gc = [], GC = GC_ED.value.toUpperCase();
 		InputCommandMap = [];
-		LOG.html (``);
+		LOG.innerHTML = ``;
 		GC = GC.replace (/[XYIJ][ \n]/gi, g => g[0] + `0 ` + g[1]);
 		GC = GC.replace (/G[4-8][0-9]/gi, ``).split (`\n`);
-		LOG.html (LOG.html() + logValidMsg (`Axis zero fill complete.`));
+		LOG.innerHTML = LOG.innerHTML + logValidMsg (`Axis zero fill complete.`);
 		for (let i = 0; i < GC.length; i++) {
 			GC[i] = GC[i].trim();
 			if (/[^GXY]/i.test (GC[i][0])) continue;
@@ -329,13 +329,13 @@
 			InputCommandMap.push (i + 1);
 		}
 		GC = gc;
-		LOG.html (LOG.html() + logValidMsg (`Auto-format complete.`));
+		LOG.innerHTML = LOG.innerHTML + logValidMsg (`Auto-format complete.`);
 		for (let i = 0; i < GC.length; i++) {
 			if (GC[i][0] == `G`) {
 				if (/[01239]/.test (GC[i][1])) prevMode = GC[i].split (` `)[0];
 			}else GC[i] = prevMode + ` ` + GC[i];
 		}
-		LOG.html (LOG.html() + logValidMsg (`G modes filled.`));
+		LOG.innerHTML = LOG.innerHTML + logValidMsg (`G modes filled.`);
 		gc = [];
 		for (let i = 0; i < GC.length; i++) {
 			mode = parseInt (GC[i].slice (1, 3));
@@ -346,7 +346,7 @@
 				case 3 :
 				case 92 :
 					if (!(/[XY]/.test (GC[i]))) {
-						LOG.html (LOG.html() + logErrorMsg (i + 1, `Axis Word Error: atleast one axis word required.`));
+						LOG.innerHTML = LOG.innerHTML + logErrorMsg (i + 1, `Axis Word Error: atleast one axis word required.`);
 						errFlag = true;
 					}else {
 						GC[i] = GC[i].split (` `);
@@ -358,7 +358,7 @@
 					}
 					if (mode == 2 || mode == 3) {
 						if (!(/[IJ]/.test (GC[i]))) {
-							LOG.html (LOG.html() + logErrorMsg (i + 1, `Arc Offset Error: atleast one offset required.`));
+							LOG.innerHTML = LOG.innerHTML + logErrorMsg (i + 1, `Arc Offset Error: atleast one offset required.`);
 							errFlag = true;
 						}else {
 							GC[i] = GC[i].split (` `);
@@ -370,22 +370,22 @@
 					gc.push (GC[i]);
 					break;
 				default :
-// LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${mode}]`));
-					LOG.html (LOG.html() + logErrorMsg (i + 1, `Ignoring Command [${GC[i]}]`));
+// LOG.innerHTML = LOG.innerHTML + logErrorMsg (i + 1, `Ignoring Command [${mode}]`);
+					LOG.innerHTML = LOG.innerHTML + logErrorMsg (i + 1, `Ignoring Command [${GC[i]}]`);
 			}
 // if (errFlag) break;
 		}
 		if (errFlag) {
 			GCode = ``;
 		}else {
-			LOG.html (LOG.html() + logValidMsg (`Axis words filled.`));
+			LOG.innerHTML = LOG.innerHTML + logValidMsg (`Axis words filled.`);
 			GCode = gc.join (` `).split (`G`);
 			InputCommandMap.unshift (``);
 			console.log (`processed G code`);
 			for (let i = 0; i < gc.length; i++) console.log (`[${i}]: ${gc[i]}`);
 // console.log (InputCommandMap);
 		}
-// LOG[0].scrollIntoView (false);
+// LOG.scrollIntoView (false);
 	}
 	function zoomChange() {
 		const zoom = (ZoomLevel - ZOOM_SLIDER.value) < 0 ? 1 + ZOOM_SCALE_STEP : 1 - ZOOM_SCALE_STEP;
@@ -405,9 +405,9 @@
 	}
 	CANVAS.onmousemove = e => {
 		CurrentTransformedCursor = getTransformedPoint (e.offsetX, e.offsetY);
-// $(`#mousePos`).html (`x: ${e.offsetX} &nbsp; y: ${e.offsetY}`);
-// $(`#mousePos`).html (`x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION * -1).toFixed (3)}`);
-		$(`#mousePos`).html (`x: ${((CurrentTransformedCursor.x / RESOLUTION) + CvOrigin.X).toFixed (3)} &nbsp; y: ${((CurrentTransformedCursor.y / RESOLUTION) + CvOrigin.Y).toFixed (3)}`);
+// $(`#mousePos`).innerHTML = `x: ${e.offsetX} &nbsp; y: ${e.offsetY}`;
+// $(`#mousePos`).innerHTML = `x: ${(CurrentTransformedCursor.x / RESOLUTION).toFixed (3)} &nbsp; y: ${(CurrentTransformedCursor.y / RESOLUTION * -1).toFixed (3)}`;
+		$(`#mousePos`).innerHTML = `x: ${((CurrentTransformedCursor.x / RESOLUTION) + CvOrigin.X).toFixed (3)} &nbsp; y: ${((CurrentTransformedCursor.y / RESOLUTION) + CvOrigin.Y).toFixed (3)}`;
 		if (IsDragging) {
 			C.translate (CurrentTransformedCursor.x - DragStartPosition.x, CurrentTransformedCursor.y - DragStartPosition.y);
 			drawPathToCanvas();
