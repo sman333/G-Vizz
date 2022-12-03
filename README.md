@@ -1,14 +1,14 @@
-<base target="_blank">
 # G-Vizz
 G Code Visualising Tool
 
 Live App >> https://www.smokstak.co.in/git/G_VIZZ.html
 
-<a href="http://example.com" target="_blank"></a>
-<a href="http://example.com">http://example.com</a>
+[Open in new tab1](https://external.ink?to=/https://smokstak.co.in/git/G_VIZZ.html)
 
-<a href="http://smokstak.co.in/git/G_VIZZ.html" target="_blank"></a>
+[Open in new tab2](https://external.ink?to=https://smokstak.co.in/git/G_VIZZ.html)
 
-<a href="http://smokstak.co.in/git/G_VIZZ.html" target="_blank"> test link </a>
+[Open in new tab3](https://external.ink?to=///smokstak.co.in/git/G_VIZZ.html)
 
-[test link](http://smokstak.co.in/git/G_VIZZ.html){target="_blank" rel="noopener"}
+[Open in new tab4](https://external.ink?to=/smokstak.co.in/git/G_VIZZ.html)
+
+[Open in new tab5](https://external.ink?to=smokstak.co.in/git/G_VIZZ.html)
