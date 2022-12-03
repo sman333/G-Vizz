@@ -1,3 +1,4 @@
+<base target="_blank">
 # G-Vizz
 G Code Visualising Tool
 
