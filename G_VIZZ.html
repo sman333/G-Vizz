@@ -54,12 +54,12 @@
 	window.onhashchange = () => { if (sideBarOpen) menu(); }
 	function menu() {
 		if (sideBarOpen) {
-			$(`sideBar`)[0].style.display = `none`;
-			$(`infoBar`)[0].style.width = `100vw`;
+			$(`#sideBar`)[0].style.display = `none`;
+			$(`#infoBar`)[0].style.width = `100vw`;
 			sideBarOpen = false;
 		}else {
-			$(`sideBar`)[0].style.display = `block`;
-			$(`infoBar`)[0].style.width = `calc(100vw - ${sideBarWidth}px)`;
+			$(`#sideBar`)[0].style.display = `block`;
+			$(`#infoBar`)[0].style.width = `calc(100vw - ${sideBarWidth}px)`;
 			setTimeout (() => sideBarOpen = true, 400);
 		}
 	}
@@ -350,8 +350,8 @@
 						errFlag = true;
 					}else {
 						GC[i] = GC[i].split (` `);
-						if (GC[i][1][0] != `X`) GC[i].splice (1, 0, prevX);
-						if (!(/[Y]/.test (GC[i][2]))) GC[i][2] = prevY;
+						if (!(/[X]/.test (GC[i][1]))) GC[i].splice (1, 0, prevX);
+						if (!(/[Y]/.test (GC[i][2]))) GC[i].splice (2, 0, prevY);
 						prevX = GC[i][1];
 						prevY = GC[i][2];
 						GC[i] = GC[i].join (` `);
@@ -362,8 +362,8 @@
 							errFlag = true;
 						}else {
 							GC[i] = GC[i].split (` `);
-							if (GC[i][3][0] != `I`) GC[i].splice (3, 0, `I0`);
-							if (!(/[J]/.test (GC[i][4]))) GC[i][4] = `J0`;
+							if (!(/[I]/.test (GC[i][3]))) GC[i].splice (3, 0, `I0`);
+							if (!(/[J]/.test (GC[i][4]))) GC[i].splice (4, 0, `J0`);
 							GC[i] = GC[i].join (` `);
 						}
 					}
